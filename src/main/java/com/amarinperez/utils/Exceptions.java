@@ -8,7 +8,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 public class Exceptions {
-    private static <T> void expectException(Callable<T> statement, Class<? extends Exception> expectedException,
+    public static <T> void expectException(Callable<T> statement, Class<? extends Exception> expectedException,
                                             String expectedMessage, String failureMessage) {
         try {
             statement.call();
