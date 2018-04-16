@@ -1,9 +1,9 @@
-package com.amarinperez.test_utils;
+package com.github.quiram.test_utils;
 
 import java.util.List;
 import java.util.function.Function;
 
-import static com.amarinperez.test_utils.Exceptions.expectException;
+import static com.github.quiram.test_utils.Exceptions.expectException;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 

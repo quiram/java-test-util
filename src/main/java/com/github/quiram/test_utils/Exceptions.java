@@ -1,4 +1,4 @@
-package com.amarinperez.test_utils;
+package com.github.quiram.test_utils;
 
 import com.amarinperez.utils.VoidCallable;
 
