@@ -1,6 +1,6 @@
 package com.github.quiram.test_utils;
 
-import com.amarinperez.utils.VoidCallable;
+import com.github.quiram.utils.VoidCallable;
 
 import java.util.concurrent.Callable;
 
