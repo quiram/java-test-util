@@ -25,11 +25,12 @@ public class Exceptions {
         try {
             statement.call();
             fail(format("Expected exception %s not thrown", expectedException.getSimpleName()));
-            return null; // Just so the compiler doesn't complain, we'll never get to this point
         } catch (Exception e) {
             assertEquals(expectedException, e.getClass());
             return (E) e;
         }
+
+        throw new RuntimeException("Just so the compiler doesn't complain, we'll never get to this point");
     }
 
     public static void expectException(VoidCallable statement, Class<? extends Exception> expectedException,
@@ -48,10 +49,11 @@ public class Exceptions {
         try {
             statement.call();
             fail(format("Expected exception %s not thrown", expectedException.getSimpleName()));
-            return null; // Just so the compiler doesn't complain, we'll never get to this point
         } catch (Exception e) {
             assertEquals(expectedException, e.getClass());
             return (E) e;
         }
+
+        throw new RuntimeException("Just so the compiler doesn't complain, we'll never get to this point");
     }
 }
