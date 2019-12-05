@@ -20,6 +20,10 @@ public class Matchers {
         return is(matcher);
     }
 
+    public static <T> Matcher<T> that(Matcher<T> matcher) {
+        return matcher;
+    }
+
     public static <T> Matcher<Pair<? extends T, ? extends T>> both(Matcher<T> matcher) {
         return new PairMatcher<>(matcher);
     }
