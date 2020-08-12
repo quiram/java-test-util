@@ -25,15 +25,31 @@ public class ArgumentsManipulation {
 
     @SafeVarargs
     public static Arguments transform(Arguments arguments, Function<Object, Object>... functions) {
-        if (arguments.get().length != functions.length) {
-            throw new IllegalArgumentException(String.format("Expected %d function(s), got %d", arguments.get().length, functions.length));
-        }
+        checkArguments(arguments, functions);
 
         final Object[] args = arguments.get();
         final Object[] newArgs = new Object[functions.length];
         IntStream.range(0, newArgs.length).forEach(j -> newArgs[j] = functions[j].apply(args[j]));
 
         return Arguments.of(newArgs);
+    }
 
+    @SafeVarargs
+    public static Function<Arguments, Boolean> applyFilter(Function<Object, Boolean>... functions) {
+        return args -> applyFilter(args, functions);
+    }
+
+    @SafeVarargs
+    public static boolean applyFilter(Arguments arguments, Function<Object, Boolean>... functions) {
+        checkArguments(arguments, functions);
+
+        final Object[] args = arguments.get();
+        return IntStream.range(0, functions.length).allMatch(i -> functions[i].apply(args[i]));
+    }
+
+    private static void checkArguments(Arguments arguments, Object[] functions) {
+        if (arguments.get().length != functions.length) {
+            throw new IllegalArgumentException(String.format("Expected %d function(s), got %d", arguments.get().length, functions.length));
+        }
     }
 }

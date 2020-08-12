@@ -3,15 +3,14 @@ package com.github.quiram.test_utils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import static com.github.quiram.test_utils.ArgumentsManipulation.extract;
-import static com.github.quiram.test_utils.ArgumentsManipulation.transform;
+import static com.github.quiram.test_utils.ArgumentsManipulation.*;
 import static com.github.quiram.utils.Random.randomInt;
 import static com.github.quiram.utils.Random.randomString;
 import static java.util.function.Function.identity;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ArgumentsManipulationTest {
     @Test
@@ -64,5 +63,31 @@ class ArgumentsManipulationTest {
         assertThat(newArgs.length, is(2));
         assertThat(newArgs[0], is(value1 + "-modified"));
         assertThat(newArgs[1], is(value2 + 1));
+    }
+
+    @Test
+    void failToFilterIfNumberOfFunctionsDoesNotMatchArguments() {
+        final Exception exception = assertThrows(IllegalArgumentException.class, () -> applyFilter(Arguments.of(randomString(), randomString()), arg -> true));
+        assertThat(exception.getMessage(), containsString("Expected 2 function(s), got 1"));
+    }
+
+    @Test
+    void returnTrueIfAllFiltersMatch() {
+        assertTrue(applyFilter(Arguments.of(1), i -> true));
+    }
+
+    @Test
+    void returnFalseIfNoFilterMatches() {
+        assertFalse(applyFilter(Arguments.of(1), i -> false));
+    }
+
+    @Test
+    void returnFalseIfAnyFilterDoesNotMatch() {
+        assertFalse(applyFilter(Arguments.of(1, 2), i -> true, i -> false));
+    }
+
+    @Test
+    void filterAppliesToArguments() {
+        assertTrue(applyFilter(Arguments.of("hello", 2), s -> s.equals("hello"), i -> (int) i > 0));
     }
 }
