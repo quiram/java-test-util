@@ -8,6 +8,8 @@ import org.hamcrest.TypeSafeMatcher;
 import static org.hamcrest.CoreMatchers.is;
 
 public class Matchers {
+
+
     public static Matcher<Object> containsString(String substring) {
         return new ToStringContainsString(substring);
     }
@@ -26,6 +28,12 @@ public class Matchers {
 
     public static <T> Matcher<Pair<? extends T, ? extends T>> both(Matcher<T> matcher) {
         return new PairMatcher<>(matcher);
+    }
+
+    private static final Md5HashMatcher md5HashMatcher = new Md5HashMatcher();
+
+    public static Matcher<String> looksLikeMd5Hash() {
+        return md5HashMatcher;
     }
 
     private static class ToStringContainsString extends TypeSafeMatcher<Object> {
@@ -63,6 +71,19 @@ public class Matchers {
         @Override
         public void describeTo(Description description) {
             description.appendText("a pair of elements where both elements ").appendDescriptionOf(matcher);
+        }
+    }
+
+    private static class Md5HashMatcher extends TypeSafeMatcher<String> {
+
+        @Override
+        protected boolean matchesSafely(String s) {
+            return s.matches("^[a-fA-F0-9]{32}$");
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("an MD5-compatible (32 hexadecimal characters) string");
         }
     }
 }
