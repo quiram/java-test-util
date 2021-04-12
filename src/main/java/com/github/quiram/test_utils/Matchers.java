@@ -5,10 +5,25 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+import java.util.Optional;
+
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class Matchers {
 
+    public static <T> Matcher<Optional<T>> hasContent() {
+        return hasContent(notNullValue());
+    }
+
+    public static <T> Matcher<Optional<T>> hasContent(T content) {
+        return hasContent(equalTo(content));
+    }
+
+    public static <T> Matcher<Optional<T>> hasContent(Matcher<? super T> contentMatcher) {
+        return new OptionalNestedMatcher<>(contentMatcher);
+    }
 
     public static Matcher<Object> containsString(String substring) {
         return new ToStringContainsString(substring);
@@ -34,6 +49,24 @@ public class Matchers {
 
     public static Matcher<String> looksLikeMd5Hash() {
         return md5HashMatcher;
+    }
+
+    private static class OptionalNestedMatcher<T> extends TypeSafeMatcher<Optional<T>> {
+        private final Matcher<? super T> contentMatcher;
+
+        OptionalNestedMatcher(Matcher<? super T> contentMatcher) {
+            this.contentMatcher = contentMatcher;
+        }
+
+        @Override
+        protected boolean matchesSafely(Optional<T> t) {
+            return t.isPresent() && contentMatcher.matches(t.get());
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("an optional that contains ").appendDescriptionOf(contentMatcher);
+        }
     }
 
     private static class ToStringContainsString extends TypeSafeMatcher<Object> {
